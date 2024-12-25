@@ -27,7 +27,8 @@ namespace DailyFeeling.Database
 
                 // Configurar o CreatedAt com valor default
                 entity.Property(u => u.CreatedAt)
-                      .HasDefaultValueSql("CURRENT_TIMESTAMP"); // Definir o valor default para "CreatedAt"
+                        .HasColumnType("datetime(6)")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
             });
         }
 
