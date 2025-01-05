@@ -1,0 +1,66 @@
+body {
+  margin: 0;
+  height: 100vh;
+  background: linear-gradient(	 #4a1564, #000000);
+  color: white;
+}
+
+img.icon {
+  display: flex;
+  
+  margin-top: 100%;
+  flex-direction: column;
+  margin: auto;
+  height: 20%;
+  width: 20%;
+}
+
+.container {
+
+  border-radius: 30px;
+  font-size: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center; 
+  margin: auto;
+  margin-top: 40px;
+  padding-bottom: 30px;
+  padding-top: 10px;
+  width: 260px;
+  background-color:	#F24D72;
+  
+  font-family: Apple Chancery, cursive;
+}
+
+input, select, textarea{
+  color: #000000;
+}
+.header {
+  
+  display: flex;
+  flex-direction: column;
+  font-family: Apple Chancery, cursive;
+  font-size: 26px;
+  margin-top: 90px;
+  align-items: center; 
+  justify-content: center;
+  color: #f79cf7;
+}
+.submit{
+  color: #000000;
+  border-radius: 10px;
+  font-family: Apple Chancery, cursive;
+  background-color: #f79cf7;
+
+}
+
+.inputField{
+  color: #4a1564;
+  background-color: #fef8f8;
+  border-radius: 10px;
+}
+
+.clickable{
+  text-decoration: underline;
+}
