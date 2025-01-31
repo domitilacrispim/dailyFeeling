@@ -23,7 +23,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 var app = builder.Build();
 
 // Verifica conexão com o banco de dados
-CheckDatabaseConnection(app);
+EnsureDatabaseSetup(app);
 
 // Ativa o middleware do Swagger para gerar o documento
 app.UseSwagger();
@@ -49,19 +49,22 @@ void ConfigureDbContext(WebApplicationBuilder builder)
             ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))));
 }
 
-void CheckDatabaseConnection(WebApplication app)
+void EnsureDatabaseSetup(WebApplication app)
 {
     using var scope = app.Services.CreateScope();
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     try
     {
         dbContext.Database.OpenConnection(); // Abre a conexão
-        Console.WriteLine("✅ Conexão com o banco de dados bem-sucedida!");
         dbContext.Database.CloseConnection(); // Fecha a conexão
+        Console.WriteLine("✅ Conexão com o banco de dados bem-sucedida!");
+
+        dbContext.Database.Migrate(); // Aplica as migrações
+        Console.WriteLine("✅ Migrações aplicadas com sucesso.");
     }
     catch (Exception ex)
     {
-        Console.WriteLine("❌ Falha ao conectar ao banco de dados.");
+        Console.WriteLine("❌ Falha ao conectar ao banco de dados ou executar as migrações.");
         Console.WriteLine($"Erro: {ex.Message}");
     }
 }
