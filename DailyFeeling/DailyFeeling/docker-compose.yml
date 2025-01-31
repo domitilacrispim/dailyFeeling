@@ -2,11 +2,13 @@ services:
   app:
     build: .
     ports:
-      - "5005:8080"  # Mapeia a porta 80 do container para a porta 5005 do host
+      - "5005:8080"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     environment:
-      - ASPNETCORE_ENVIRONMENT=Production  # Configura o ambiente como Produção, se necessário
+      - ASPNETCORE_ENVIRONMENT=Production
+  
   db:
     image: mysql:8.0
     environment:
@@ -16,8 +18,14 @@ services:
       MYSQL_PASSWORD: user_password
     ports:
       - "3306:3306"
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      retries: 5
+      start_period: 30s
     volumes:
       - db_data:/var/lib/mysql
+
 volumes:
   db_data:
     driver: local
