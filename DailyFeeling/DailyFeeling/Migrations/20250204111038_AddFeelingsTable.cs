@@ -1,4 +1,5 @@
 ﻿using System;
+using DailyFeeling.Models;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
@@ -19,8 +20,7 @@ namespace DailyFeeling.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     UserId = table.Column<int>(type: "int", nullable: false),
-                    EmojiUnicode = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Mood = table.Column<int>(type: "int", nullable: false),
                     Date = table.Column<DateTime>(type: "DATE", nullable: false)
                 },
                 constraints: table =>

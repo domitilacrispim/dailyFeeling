@@ -12,7 +12,7 @@ public class Feeling
     [Required]
     public int UserId { get; set; }
     [Required]
-    public string EmojiUnicode { get; set; }
+    public Mood Mood { get; set; }
     [Required]
     public DateTime Date { get; set; } 
 }

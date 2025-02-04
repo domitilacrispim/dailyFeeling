@@ -14,11 +14,13 @@ ConfigureDbContext(builder);
 // Adiciona o Swagger para gerar a documentação da API
 builder.Services.AddSwaggerGen();
 
-// Registrar o UserRepository
+// Registrar os Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IFeelingsRepository, FeelingsRepository>();
 
-// Registrar o AuthService
+// Registrar os Services
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IFeelingsService, FeelingsService>();
 
 var app = builder.Build();
 

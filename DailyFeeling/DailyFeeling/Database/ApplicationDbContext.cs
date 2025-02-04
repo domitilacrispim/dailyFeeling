@@ -49,7 +49,7 @@ public class ApplicationDbContext : DbContext
                 .HasColumnType("DATE") // Apenas a data, sem hora/minuto
                 .IsRequired(); 
 
-            entity.Property(f => f.EmojiUnicode)
+            entity.Property(f => f.Mood)
                 .IsRequired(); 
 
             entity.HasIndex(f => new { f.UserId, f.Date })

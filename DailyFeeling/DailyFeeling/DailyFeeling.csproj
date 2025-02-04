@@ -27,9 +27,7 @@
     <None Remove="DTOs\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Controllers\" />
     <Folder Include="Database\" />
-    <Folder Include="Services\" />
     <Folder Include="Utils\" />
     <Folder Include="Extensions\" />
     <Folder Include="DTOs\" />
