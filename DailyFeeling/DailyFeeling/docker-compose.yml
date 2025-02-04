@@ -22,7 +22,7 @@ services:
     expose:
       - "3306"
     healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      test: ["CMD", "mysql", "-h", "localhost", "-uuser", "-puser", "-e", "SELECT 1"]
       interval: 10s
       retries: 5
       start_period: 30s

@@ -9,11 +9,17 @@ public class ApplicationDbContext : DbContext
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
     public DbSet<User> Users { get; set; }
+    public DbSet<Feeling> Feelings { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-
+        ConfigureUsers(modelBuilder);
+        ConfigureFeelings(modelBuilder);
+    }
+    
+    private void ConfigureUsers(ModelBuilder modelBuilder)
+    {
         // Configuração para a tabela "Users"
         modelBuilder.Entity<User>(entity =>
         {
@@ -29,6 +35,25 @@ public class ApplicationDbContext : DbContext
             entity.Property(u => u.CreatedAt)
                 .HasColumnType("datetime(6)")
                 .HasDefaultValueSql("CURRENT_TIMESTAMP");
+        });
+    }
+
+    private void ConfigureFeelings(ModelBuilder modelBuilder)
+    {
+        // Configuração para a tabela "Feelings"
+        modelBuilder.Entity<Feeling>(entity =>
+        {
+            entity.ToTable("Feelings"); // Nome da tabela no banco
+
+            entity.Property(f => f.Date)
+                .HasColumnType("DATE") // Apenas a data, sem hora/minuto
+                .IsRequired(); 
+
+            entity.Property(f => f.EmojiUnicode)
+                .IsRequired(); 
+
+            entity.HasIndex(f => new { f.UserId, f.Date })
+                .IsUnique(); // Garante que um usuário só pode ter um sentimento por dia
         });
     }
 

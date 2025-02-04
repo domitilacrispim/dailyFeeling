@@ -8,8 +8,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Adiciona suporte a controladores
 builder.Services.AddControllers();
 
-Thread.Sleep(5000);
-
 // Configuração do DbContext para usar MySQL
 ConfigureDbContext(builder);
 
