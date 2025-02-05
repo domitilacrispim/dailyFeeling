@@ -1,18 +1,46 @@
-﻿using DailyFeeling.Database;
+﻿using System.Text;
+using DailyFeeling.Database;
 using DailyFeeling.Repositories;
 using DailyFeeling.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Adiciona suporte a controladores
+SetUpJwt(builder);
 builder.Services.AddControllers();
-
-// Configuração do DbContext para usar MySQL
 ConfigureDbContext(builder);
 
 // Adiciona o Swagger para gerar a documentação da API
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    // Define a segurança Bearer Token
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Entre com o seu token JWT"
+    });
+
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+});
 
 // Registrar os Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -24,24 +52,20 @@ builder.Services.AddScoped<IFeelingsService, FeelingsService>();
 
 var app = builder.Build();
 
-// Verifica conexão com o banco de dados
 EnsureDatabaseSetup(app);
 
-// Ativa o middleware do Swagger para gerar o documento
 app.UseSwagger();
-
-// Ativa o Swagger UI
 app.UseSwaggerUI(options =>
 {
     options.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");
     options.RoutePrefix = string.Empty;
 });
 
-// Mapeia os controladores
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.MapControllers();
-
 app.MapGet("/", () => "Hello World!");
-
 app.Run();
 
 void ConfigureDbContext(WebApplicationBuilder builder)
@@ -69,4 +93,24 @@ void EnsureDatabaseSetup(WebApplication app)
         Console.WriteLine("❌ Falha ao conectar ao banco de dados ou executar as migrações.");
         Console.WriteLine($"Erro: {ex.Message}");
     }
+}
+
+void SetUpJwt(WebApplicationBuilder builder)
+{
+    var key = Encoding.ASCII.GetBytes(builder.Configuration["Jwt:SecretKey"]);
+
+    builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        .AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+                ValidateIssuer = false,
+                ValidateAudience = false
+            };
+        });
+
+    builder.Services.AddAuthorization();
+    builder.Services.AddScoped<JwtService>();
 }

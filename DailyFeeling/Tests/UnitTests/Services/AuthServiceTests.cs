@@ -28,7 +28,7 @@ public class AuthServiceTests
             var result = await _authService.RegisterAsync(userRequest);
 
             // Assert
-            Assert.Equal("Email já cadastrado.", result);
+            Assert.Equal(result, ApiResponse<User?>.ErrorResponse(409, "Email já cadastrado."));
         }
 
         [Fact]
@@ -43,7 +43,7 @@ public class AuthServiceTests
             var result = await _authService.RegisterAsync(userRequest);
 
             // Assert
-            Assert.Equal("Username já cadastrado", result);
+            Assert.Equal(result, ApiResponse<User?>.ErrorResponse(409, "Username já cadastrado"));
         }
 
         [Fact]

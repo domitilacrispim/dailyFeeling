@@ -29,4 +29,9 @@ public class ApiResponse<T>
     {
         return new ApiResponse<T?>(404, false, message);
     }
+    
+    public static ApiResponse<T?> Unauthorized(string? message = null)
+    {
+        return new ApiResponse<T?>(403, false, message);
+    }
 }

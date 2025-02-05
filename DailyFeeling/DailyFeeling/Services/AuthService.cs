@@ -14,16 +14,16 @@ public class AuthService : IAuthService
         _userRepository = userRepository;
     }
 
-    public async Task<string?> RegisterAsync(RegisterRequest userRequest)
+    public async Task<ApiResponse<User?>> RegisterAsync(RegisterRequest userRequest)
     {
         if (await _userRepository.EmailExistsAsync(userRequest.Email))
         {
-            return "Email já cadastrado.";
+            return ApiResponse<User?>.ErrorResponse(409, "Email already exists");
         }
 
         if (await _userRepository.UsernameExistsAsync(userRequest.Username))
         {
-            return "Username já cadastrado";
+            return ApiResponse<User?>.ErrorResponse(409, "Username já cadastrado");
         }
 
         var user = new User
@@ -36,10 +36,10 @@ public class AuthService : IAuthService
         user.CreatedAt = DateTime.Now;
 
         await _userRepository.AddUserAsync(user);
-        return null; // Indica sucesso
+        return ApiResponse<User?>.SuccessResponse(user, "User created");
     }
 
-    public async Task<string?> LoginAsync(LoginRequest loginRequest)
+    public async Task<ApiResponse<User?>> LoginAsync(LoginRequest loginRequest)
     {
         User? user = null;
         if (loginRequest.Email is not null)
@@ -53,14 +53,14 @@ public class AuthService : IAuthService
 
         if (user == null)
         {
-            return "Email ou Username inválido.";
+            return ApiResponse<User?>.Unauthorized("Email ou Username inválido.");
         }
 
         if (!PasswordHasher.VerifyPassword(loginRequest.Password, user.PasswordHash))
         {
-            return "Senha inválida!";
+            return ApiResponse<User?>.Unauthorized("Senha inválida!");
         }
 
-        return null; // Indica sucesso
+        return ApiResponse<User?>.SuccessResponse(user, "Login successful");
     }
 }

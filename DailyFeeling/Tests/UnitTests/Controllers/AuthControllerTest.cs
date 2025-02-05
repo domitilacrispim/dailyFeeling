@@ -1,5 +1,6 @@
 using DailyFeeling.Controllers;
 using DailyFeeling.DTOs;
+using DailyFeeling.Models;
 using DailyFeeling.Services;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -14,7 +15,8 @@ public class AuthControllerTests
     public AuthControllerTests()
     {
         _authServiceMock = new Mock<IAuthService>();
-        _authController = new AuthController(_authServiceMock.Object);
+        var jwtServiceMock = new Mock<JwtService>();
+        _authController = new AuthController(_authServiceMock.Object, jwtServiceMock.Object);
     }
 
     [Fact]
@@ -23,14 +25,14 @@ public class AuthControllerTests
         // Arrange
         var request = new RegisterRequest { Username = "test", Email = "test@example.com", Password = "password" };
         _authServiceMock.Setup(s => s.RegisterAsync(It.IsAny<RegisterRequest>()))
-            .ReturnsAsync("Email já cadastrado.");
+            .ReturnsAsync(ApiResponse<User?>.ErrorResponse(409, "Email already exists"));
 
         // Act
         var result = await _authController.Register(request);
 
         // Assert
-        var actionResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Email já cadastrado.", actionResult.Value);
+        var actionResult = Assert.IsType<StatusCodeResult>(result);
+        Assert.Equal(409, actionResult.StatusCode);
     }
 
     [Fact]
@@ -38,14 +40,15 @@ public class AuthControllerTests
     {
         // Arrange
         var request = new RegisterRequest { Username = "test", Email = "test@example.com", Password = "password" };
+        var user = new User { CreatedAt = DateTime.Now, Email = request.Email, Username = request.Username, Id = 0, PasswordHash = "abcd" };
         _authServiceMock.Setup(s => s.RegisterAsync(It.IsAny<RegisterRequest>()))
-            .ReturnsAsync((string?)null);  // Nenhum erro, usuário registrado com sucesso.
+            .ReturnsAsync(ApiResponse<User?>.SuccessResponse(user));  // Nenhum erro, usuário registrado com sucesso.
 
         // Act
         var result = await _authController.Register(request);
 
         // Assert
-        var actionResult = Assert.IsType<OkObjectResult>(result);
-        Assert.Equal("Usuário registrado com sucesso.", actionResult.Value);
+        var actionResult = Assert.IsType<StatusCodeResult>(result);
+        Assert.Equal(200, actionResult.StatusCode);
     }
 }

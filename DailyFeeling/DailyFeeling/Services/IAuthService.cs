@@ -1,9 +1,10 @@
 ﻿using DailyFeeling.DTOs;
+using DailyFeeling.Models;
 
 namespace DailyFeeling.Services;
 
 public interface IAuthService
 {
-	Task<string?> RegisterAsync(RegisterRequest userRequest);
-	Task<string?> LoginAsync(LoginRequest loginRequest);
+	Task<ApiResponse<User?>> RegisterAsync(RegisterRequest userRequest);
+	Task<ApiResponse<User?>> LoginAsync(LoginRequest loginRequest);
 }

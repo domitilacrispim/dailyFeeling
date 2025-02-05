@@ -10,62 +10,30 @@ namespace DailyFeeling.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
+    private readonly JwtService _jwtService;
 
-    public AuthController(IAuthService authService)
+    public AuthController(IAuthService authService, JwtService jwtService)
     {
         _authService = authService;
+        _jwtService = jwtService;
     }
 
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterRequest user)
     {
-        var errorMessage = await _authService.RegisterAsync(user);
-        if (errorMessage != null)
-        {
-            return BadRequest(errorMessage);
-        }
-
-        return Ok("Usuário registrado com sucesso.");
+        var response = await _authService.RegisterAsync(user);
+        return StatusCode(response.StatusCode, response);
     }
 
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
     {
-        var errorMessage = await _authService.LoginAsync(loginRequest);
-        if (errorMessage != null)
+        var response = await _authService.LoginAsync(loginRequest);
+        if (response.Success && response.Data is User)
         {
-            return Unauthorized(errorMessage);
+            var token = _jwtService.GenerateToken(response.Data);
+            return Ok(new { token = token, response = response });
         }
-
-        return Ok("Login bem-sucedido.");
-    }
-    
-    [HttpPost("File")]
-    public async Task<IActionResult> File()
-    {
-        try
-        {
-            // Diretório atual onde o executável está sendo executado
-            string currentDirectory = Directory.GetCurrentDirectory();
-        
-            // Nome do arquivo a ser criado
-            string fileName = "arquivo.txt";
-        
-            // Caminho completo do arquivo
-            string filePath = Path.Combine(currentDirectory, fileName);
-        
-            // Conteúdo do arquivo
-            string content = "Este é o conteúdo do arquivo criado via endpoint.";
-        
-            // Criação do arquivo e escrita do conteúdo
-            await System.IO.File.WriteAllTextAsync(filePath, content);
-        
-            return Ok($"Arquivo '{fileName}' criado no diretório: {currentDirectory}");
-        }
-        catch (Exception ex)
-        {
-            // Captura e retorna qualquer erro ocorrido
-            return StatusCode(500, $"Erro ao criar o arquivo: {ex.Message}");
-        }
+        return StatusCode(response.StatusCode, response);
     }
 }

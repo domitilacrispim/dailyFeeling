@@ -43,6 +43,7 @@ public class FeelingsRepository : IFeelingsRepository
         if (feeling == null)
             return null;
         _dbContext.Feelings.Remove(feeling);
+        await _dbContext.SaveChangesAsync();
         return feeling;
     }
 
