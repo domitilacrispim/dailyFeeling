@@ -23,7 +23,7 @@ public class AuthService : IAuthService
 
         if (await _userRepository.UsernameExistsAsync(userRequest.Username))
         {
-            return ApiResponse<User?>.ErrorResponse(409, "Username já cadastrado");
+            return ApiResponse<User?>.ErrorResponse(409, "Username already exists");
         }
 
         var user = new User
@@ -53,12 +53,12 @@ public class AuthService : IAuthService
 
         if (user == null)
         {
-            return ApiResponse<User?>.Unauthorized("Email ou Username inválido.");
+            return ApiResponse<User?>.Unauthorized("Invalid Email or Username");
         }
 
         if (!PasswordHasher.VerifyPassword(loginRequest.Password, user.PasswordHash))
         {
-            return ApiResponse<User?>.Unauthorized("Senha inválida!");
+            return ApiResponse<User?>.Unauthorized("Invalid Password");
         }
 
         return ApiResponse<User?>.SuccessResponse(user, "Login successful");

@@ -3,6 +3,7 @@ using DailyFeeling.DTOs;
 using DailyFeeling.Models;
 using DailyFeeling.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Moq;
 
 namespace UnitTests.Controllers;
@@ -15,8 +16,13 @@ public class AuthControllerTests
     public AuthControllerTests()
     {
         _authServiceMock = new Mock<IAuthService>();
-        var jwtServiceMock = new Mock<JwtService>();
-        _authController = new AuthController(_authServiceMock.Object, jwtServiceMock.Object);
+        
+        var configurationMock = new Mock<IConfiguration>();
+        configurationMock.Setup(c => c["Jwt:SecretKey"]).Returns("a34530c30dec412cdvwfvnsdfosdfigrea353de1d1sdvfkvlsd332c70dd8a54c0b54a");
+        configurationMock.Setup(c => c["Jwt:TokenExpirationInHours"]).Returns("24");
+
+        var jwtService = new JwtService(configurationMock.Object);
+        _authController = new AuthController(_authServiceMock.Object, jwtService);
     }
 
     [Fact]
@@ -31,7 +37,7 @@ public class AuthControllerTests
         var result = await _authController.Register(request);
 
         // Assert
-        var actionResult = Assert.IsType<StatusCodeResult>(result);
+        var actionResult = Assert.IsType<ObjectResult>(result);
         Assert.Equal(409, actionResult.StatusCode);
     }
 
@@ -48,7 +54,7 @@ public class AuthControllerTests
         var result = await _authController.Register(request);
 
         // Assert
-        var actionResult = Assert.IsType<StatusCodeResult>(result);
+        var actionResult = Assert.IsType<ObjectResult>(result);
         Assert.Equal(200, actionResult.StatusCode);
     }
 }
