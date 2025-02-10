@@ -1,12 +1,16 @@
-import ListGroup from "./components/ListGroup";
-import Login from "./components/Login";
+
+import Chart from "./components/Chart"
+
+import MainPage from "./components/MainPage"
 import "./App.css";
+import Login from "./components/Login";
+import Menu from "./components/Menu"
+import AggregationTable from "./components/AgreggationTable"
 
 function App() {
-  let items = ["Rio", "Sao Paulo", "Tokyo", "Uberlandia"];
   return (
     <div>
-      <Login items={items} heading="Cities" />
+      <AggregationTable/>
     </div>
   );
 }
