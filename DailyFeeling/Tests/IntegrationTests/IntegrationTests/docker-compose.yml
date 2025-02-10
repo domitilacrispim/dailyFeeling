@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: 'rootpassword'  # Senha para o root (opcional)
+      MYSQL_USER: testuser               # Usuário a ser criado
+      MYSQL_PASSWORD: 'userpassword'     # Senha vazia para o testuser
+      MYSQL_DATABASE: testdb             # Nome do banco de dados
+    ports:
+      - "3307:3306"  # Mapeia a porta 3307 da máquina host para a porta 3306 do contêiner MySQL
+    volumes:
+      - mysql-data:/var/lib/mysql        # Persistência de dados
+    networks:
+      - mysql-network
+
+volumes:
+  mysql-data:
+
+networks:
+  mysql-network:
+    driver: bridge

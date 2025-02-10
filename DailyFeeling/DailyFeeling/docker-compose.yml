@@ -1,0 +1,34 @@
+services:
+  app:
+    build: .
+    ports:
+      - "5005:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: always  
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+  
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: daily_feelings
+      MYSQL_USER: user
+      MYSQL_PASSWORD: user
+    ports:
+      - "3306:3306"
+    expose:
+      - "3306"
+    healthcheck:
+      test: ["CMD", "mysql", "-h", "localhost", "-uuser", "-puser", "-e", "SELECT 1"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
+    driver: local

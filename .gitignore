@@ -1,0 +1,50 @@
+# Ignore arquivos do Visual Studio
+.vs/
+
+# Ignore pastas de build
+bin/
+obj/
+
+# Ignore configurações específicas do sistema operacional
+.DS_Store
+Thumbs.db
+
+# Ignore arquivos de logs e temporários
+*.log
+*.tmp
+
+# Ignore configurações do IDE
+*.user
+*.suo
+*.userosscache
+*.ide
+
+# Ignore configurações do Rider/JetBrains
+.idea/
+*.iml
+
+# Ignore resultados de publicação
+publish/
+
+# Ignore pacotes gerados
+*.nupkg
+
+# Ignore outros artefatos de compilação
+*.dll
+*.exe
+*.pdb
+
+# Ignore arquivos de cache
+*.cache
+*.gzip
+*.rnd
+
+# Ignore pastas específicas do sistema
+**/Debug/
+**/Release/
+
+# Ignore secrets
+secrets.json
+
+# Ignore dependências específicas de sistema operacional
+**/node_modules/
