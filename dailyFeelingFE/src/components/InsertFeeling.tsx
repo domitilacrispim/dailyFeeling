@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function AggregationTable() {
+function InsertFeeling() {
 
 
   // event handler
@@ -16,21 +16,20 @@ function AggregationTable() {
     <th>1</th>  
   </tr>
   <tr>
-    <th> <img className="tableIcon" src="../../imgs/very_happy.png" alt="" /></th>
-    <th> <img className="tableIcon" src="../../imgs/happy.png" alt="" /></th>  
-    <th> <img className="tableIcon" src="../../imgs/medium.png" alt="" /></th>  
-    <th> <img className="tableIcon" src="../../imgs/sad.png" alt="" /></th>  
-    <th> <img className="tableIcon" src="../../imgs/very_sad.png" alt="" /></th>  
+    <th> <img className="tableIcon" src="../../imgs/very_happy.png" alt="" onClick={() =>InsertFeelingOnDb(1)}/></th>
+    <th> <img className="tableIcon" src="../../imgs/happy.png" alt="" onClick={() =>InsertFeelingOnDb(2)}/></th>  
+    <th> <img className="tableIcon" src="../../imgs/medium.png" alt="" onClick={() =>InsertFeelingOnDb(3)}/></th>  
+    <th> <img className="tableIcon" src="../../imgs/sad.png" alt="" onClick={() =>InsertFeelingOnDb(4)}/></th>  
+    <th> <img className="tableIcon" src="../../imgs/very_sad.png" alt="" onClick={() =>InsertFeelingOnDb(5)}/></th>  
   </tr>
   
 </table>
-<button onClick={InsertFeeling}>  Activate Lasers
-</button>
       </div>
     </>
   );
 }
-function InsertFeeling() {
+function InsertFeelingOnDb(feelingId: number) {
+  console.log(feelingId)
   fetch('http://localhost:5005/api/Feelings/CreateFeeling', {
     method: 'POST',
     headers: {
@@ -54,4 +53,4 @@ function InsertFeeling() {
 }
 
 
-export default AggregationTable;
+export default InsertFeeling;

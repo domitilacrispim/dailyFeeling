@@ -6,11 +6,12 @@ import "./App.css";
 import Login from "./components/Login";
 import Menu from "./components/Menu"
 import AggregationTable from "./components/AgreggationTable"
+import InsertFeeling from "./components/InsertFeeling";
 
 function App() {
   return (
     <div>
-      <AggregationTable/>
+      <InsertFeeling/>
     </div>
   );
 }
