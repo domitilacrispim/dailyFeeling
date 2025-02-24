@@ -50,6 +50,15 @@ builder.Services.AddScoped<IFeelingsRepository, FeelingsRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IFeelingsService, FeelingsService>();
 
+// Permitindo requisições de diferentes rotas
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+        policy.AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader());
+});
+
 var app = builder.Build();
 
 EnsureDatabaseSetup(app);
@@ -63,6 +72,8 @@ app.UseSwaggerUI(options =>
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseCors();
 
 app.MapControllers();
 app.MapGet("/", () => "Hello World!");
